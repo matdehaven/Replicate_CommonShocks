@@ -100,88 +100,79 @@ P <- t(chol(Omega))
 
 ## Can back out the orthoganalized shocks, omega
 omega <- u %*% solve(t(P))
-omega2 <- t(solve(P) %*% t(u))
 
 ## Note that cov-var of orthogonalized shocks is roughly I
 cov(omega) |> round(4)
-cov(omega2) |> round(4)
 
-
-## Generate Rotation matrixes, Q
-a <- matrix(rnorm(16),4,4)
-
-## Decompose into Qr parts
-Q <- qr.Q(qr(a))
-R <- qr.R(qr(a))
-
-## Make sure the diagonal of r is all positive
-R2 <- diag(sign(diag(R)),4,4) %*% R
-Q2 <- Q %*% solve(diag(sign(diag(R)),4,4))
-
-## Rotate the Choleskey matrix
-A_tilde <- P %*% t(Q2)
-
-## Check if it matches sign restrictions
-check_signs(A_tilde)
-
-## We need to search a large number of possible rotation matrixes Q
-## To find ones that match all of our sign restrictions
-seed <- 13805
-maxiter = 10^6
-for(i in 1:maxiter){
-  if(i %% 10^6 == 0) print(i/10^6)
-  set.seed(seed + i)
-  
+## Function to randomly rotate a matrix (P)
+r_rotate <- function(X){
+  ## Generate Rotation matrixes, Q
   a <- matrix(rnorm(16),4,4)
   
+  ## Decompose into Qr parts
   Q <- qr.Q(qr(a))
   R <- qr.R(qr(a))
   
+  ## Make sure the diagonal of r is all positive
   R2 <- diag(sign(diag(R)),4,4) %*% R
   Q2 <- Q %*% solve(diag(sign(diag(R)),4,4))
-
-  A_tilde <- P %*% t(Q2)
-  signs <- check_signs(A_tilde)
   
-  if(all(signs)){
-    print(paste0("Success on ", i))
-    saveRDS(list(
-      check_signs = signs,
-      seed = seed + i,
-      a = a,
-      P = P,
-      Q = Q2,
-      A_tilde = A_tilde
-    ), file = paste0("./output/VAR_rotations/rotation_", i, ".RDS"))
+  ## Rotate the Choleskey matrix
+  A_tilde <- X %*% t(Q2)
+  
+  return(A_tilde)
+}
+
+## Example: check if it matches sign restrictions
+start.seed <- 13805
+set.seed(start.seed) 
+
+A_tilde <- r_rotate(P)
+
+## Store in a data.table so we can keep track of which signs are restrictive
+sign_results <- data.table(
+  seed = start.seed ,
+  t(check_signs(A_tilde))
+  )
+
+sign_results |> print()
+
+## We need to search a large number of possible rotation matrices Q: ~ 20 Million
+## To find ones that match all of our sign restrictions
+
+maxiter = 10^6 ## then need to save to disk
+times = 20     ## To get to 20 M
+successes <- list()
+
+for(t  in 1:times){
+  sign_results <- data.table(seed = 0, t(rep(NA,26)))
+  
+  for(i in 1:maxiter){
+    if(i %% 10^6 == 0) print(i/10^6) ## Print out each million
+    set.seed(start.seed + i) ## So we can always recreate a rotation matrix
+    
+    A_tilde <- r_rotate(P)
+    
+    signs <- check_signs(A_tilde)
+    
+    sign_results <- rbind(sign_results, data.table(seed = start.seed + i, t(signs)))
+    
+    if(all(signs)){
+      print(paste0("Success on ", i))
+      successes <- c(successes, list(A_tilde))
+    }
   }
+
+  saveRDS(sign_results[-1,], file = "./output/VAR_rotations/rotations_M", t, ".RDS")
 }
 
-for(i in 1:10){
-  print(i)
-  t <- rbindlist(lapply(1:10^5, function(i){
-    # if(i %% 10^4 == 0) print(i/10^4)
-    
-    a <- matrix(rnorm(16),4,4)
-    
-    Q <- qr.Q(qr(a))
-    R <- qr.R(qr(a))
-    
-    R2 <- diag(sign(diag(R)),4,4) %*% R
-    Q2 <- Q %*% solve(diag(sign(diag(R)),4,4))
-    
-    A_tilde <- P %*% t(Q2)
-    
-    data.table(t(check_signs(A_tilde)))
-  }))
+## Save Successes out to File as well
+saveRDS(successes, file = "./output/VAR_rotations/successful_rotations.RDS")
 
-print(apply(t,2,function(x){round(sum(x)/length(x),2)}))
-print(table(apply(t,1,function(x){sum(x)})))
-t[apply(t,1,function(x){sum(x)}) == 24,]
-t[apply(t,1,function(x){sum(x)}) == 26,]
-
-}
-
-
-check_signs(P)
-check_signs(P %*% Q)
-check_signs(P %*% Q %*% Q %*% Q)
+## And save out our VAR to use later
+saveRDS(list(
+  var = myvar,
+  u = u,
+  Omega = Omega,
+  P = P,
+), file = "./output/VAR_rotations/reduced_form_VAR.RDS")
