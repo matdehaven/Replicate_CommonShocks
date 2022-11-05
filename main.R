@@ -19,3 +19,4 @@ source("./code/chart_clean_transformed_data.R")
 
 
 ## VAR Analysis
+source("./code/replicate_VAR_analysis.R")

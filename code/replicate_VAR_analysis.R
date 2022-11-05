@@ -3,12 +3,19 @@
 ##  Use their time sample
 ##
 ##  Matthew DeHaven
-##  2022 10 29
+##  2022 11 04
 ##
 require(data.table)
 require(lubridate)
 
 require(vars)
+
+tic <- function(){
+  time_stamp <<- Sys.time()
+}
+toc <- function(){
+  difftime(Sys.time(), time_stamp, units = "secs")
+}
 
 ## The time sample used in the paper
 date_range <- ymd(c("1983-01-01", "2017-12-31"))
@@ -68,6 +75,7 @@ check_signs <- function(X){
 } 
 
 
+
 ## Read in the data
 data <- fread("./data/cleaned_data/transformed_data.csv")
 data[, date := ymd(date)]
@@ -75,7 +83,9 @@ data[, date := ymd(date)]
 ## Subset to same time period and drop EPU
 ## Omit some NAs because we have EPU data on weekends
 series <- c("yc2", "yc5", "yc10", "sp")
-X <- as.matrix(na.omit(data[date %between% date_range, ..series]))
+series_d <- c("date", series)
+analysis_data <- na.omit(data[date %between% date_range, ..series_d])
+X <- as.matrix(analysis_data[, ..series])
 
 ## Demean the data
 X <- X - matrix(rep(colMeans(X), nrow(X)), ncol = 4, byrow = T)
@@ -128,46 +138,40 @@ start.seed <- 13805
 set.seed(start.seed) 
 
 A_tilde <- r_rotate(P)
+check_signs(A_tilde)
 
-## Store in a data.table so we can keep track of which signs are restrictive
-sign_results <- data.table(
-  seed = start.seed ,
-  t(check_signs(A_tilde))
-  )
-
-sign_results |> print()
-
-## We need to search a large number of possible rotation matrices Q: ~ 20 Million
-## To find ones that match all of our sign restrictions
+## We need to search a large number of possible rotation matrices Q: ~ 22 Million
+## To find 1000 ones that match all of our sign restrictions
 
 maxiter = 10^6 ## then need to save to disk
-times = 20     ## To get to 20 M
+times = 22     ## To get to 22 M
 successes <- list()
+success_seeds <- list()
 
 for(t  in 1:times){
-  sign_results <- data.table(seed = 0, t(rep(NA,26)))
-  
+  print(t)
+  tic()
   for(i in 1:maxiter){
-    if(i %% 10^6 == 0) print(i/10^6) ## Print out each million
-    set.seed(start.seed + i) ## So we can always recreate a rotation matrix
+    current_seed <- start.seed + maxiter*t + i
+    set.seed(current_seed) ## So we can always recreate a rotation matrix
     
     A_tilde <- r_rotate(P)
     
     signs <- check_signs(A_tilde)
     
-    sign_results <- rbind(sign_results, data.table(seed = start.seed + i, t(signs)))
-    
     if(all(signs)){
-      print(paste0("Success on ", i))
+      # print(paste0("Success on ", current_seed))
       successes <- c(successes, list(A_tilde))
+      success_seeds <- c(success_seeds, list(current_seed))
     }
   }
-
-  saveRDS(sign_results[-1,], file = "./output/VAR_rotations/rotations_M", t, ".RDS")
+  print(length(successes))
+  print(toc())
 }
 
 ## Save Successes out to File as well
 saveRDS(successes, file = "./output/VAR_rotations/successful_rotations.RDS")
+saveRDS(success_seeds, file = "./output/VAR_rotations/success_seeds.RDS")
 
 ## And save out our VAR to use later
 saveRDS(list(
@@ -175,4 +179,8 @@ saveRDS(list(
   u = u,
   Omega = Omega,
   P = P,
+  analysis_data = analysis_data
 ), file = "./output/VAR_rotations/reduced_form_VAR.RDS")
+
+
+
