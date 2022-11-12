@@ -10,7 +10,7 @@ require(lubridate)
 ## raw_data file paths
 ## Filenames from download may change, the relative path is set
 yc_file <- "./data/raw_data/feds200628.csv"
-sp_file <- "./data/raw_data/28fsxnzwqukbjy0w.csv"
+sp_file <- "./data/raw_data/sp_data_combined.csv"
 epu_file <- "./data/raw_data/All_Daily_Policy_Data.csv"
 
 
