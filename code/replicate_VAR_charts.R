@@ -22,7 +22,7 @@ omegas <- lapply(1:length(rots), function(i){
   rot_shocks <- data.table(i = i, myvar$u %*% solve(t(rots[[i]])))
   rot_shocks <- rbind(data.table(i = i, t(rep(0,4))), rot_shocks)
   names(rot_shocks) <- c("rot", "g", "m", "pp", "pm")
-  rot_shocks <-  cbind(analysis_data[,.(date)], rot_shocks)
+  rot_shocks <-  cbind(myvar$analysis_data[,.(date)], rot_shocks)
   return(rot_shocks)
   })
 omegas_data <- rbindlist(omegas)
@@ -51,6 +51,12 @@ omegas_summ <- omegas_data_l[,.(
   max = max(cusum)
 ), by = .(date, variable)]
 
+## Save out MT and shock summaries
+saveRDS(list(rots_l = rots_data_l, MT_i = i_min), "./output/VAR_rotations/rotations_long_MT.RDS")
+saveRDS(omegas_summ, "./output/VAR_rotations/structural_shock_summaries.RDS")
+
+
+## Create Chart
 omegas_summ |>
   ggplot(aes(
     x = date

@@ -20,3 +20,10 @@ source("./code/chart_clean_transformed_data.R")
 
 ## VAR Analysis
 source("./code/replicate_VAR_analysis.R")
+
+## VAR Shock Charts
+source("./code/replicate_VAR_charts.R")
+
+## Historical Variance Decomposition
+source("./code/create_historical_variance_decomposition.R")
+source("./code/chart_FOMC_decomposition.R")
