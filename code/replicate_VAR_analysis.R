@@ -170,8 +170,8 @@ for(t  in 1:times){
 }
 
 ## Save Successes out to File as well
-saveRDS(successes, file = "./output/VAR_rotations/successful_rotations.RDS")
-saveRDS(success_seeds, file = "./output/VAR_rotations/success_seeds.RDS")
+saveRDS(successes, file = "./data/VAR_data/replication/successful_rotations.RDS")
+saveRDS(success_seeds, file = "./data/VAR_data/replication/success_seeds.RDS")
 
 ## And save out our VAR to use later
 saveRDS(list(
@@ -180,7 +180,7 @@ saveRDS(list(
   Omega = Omega,
   P = P,
   analysis_data = analysis_data
-), file = "./output/VAR_rotations/reduced_form_VAR.RDS")
+), file = "./data/VAR_data/replication/reduced_form_VAR.RDS")
 
 
 

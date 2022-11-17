@@ -10,7 +10,7 @@ require(lubridate)
 require(ggplot2)
 require(sandwich)
 
-hd_data <- readRDS("./output/VAR_rotations/HistoricalDecomposition_data.RDS")
+hd_data <- readRDS("./data/VAR_data/replication/HistoricalDecomposition_data.RDS")
 FOMC <- fread("./data/raw_data/FOMC_dates.csv")
 FOMC[, enddate := ymd(end_date)]
 FOMC_dates <- FOMC[year(enddate) >= 1994 & year(enddate) <= 2017 & scheduled == 1, enddate]

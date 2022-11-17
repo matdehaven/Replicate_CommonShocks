@@ -11,8 +11,8 @@ require(vars)
 
 require(ggplot2)
 
-myvar <- readRDS("./output/VAR_rotations/reduced_form_VAR.RDS")
-rots <- readRDS("./output/VAR_rotations/successful_rotations.RDS")
+myvar <- readRDS("./data/VAR_data/replication/reduced_form_VAR.RDS")
+rots <- readRDS("./data/VAR_data/replication/successful_rotations.RDS")
 
 ## Only keep the first 1000 rotations
 rots <- rots[1:1000]
@@ -52,8 +52,8 @@ omegas_summ <- omegas_data_l[,.(
 ), by = .(date, variable)]
 
 ## Save out MT and shock summaries
-saveRDS(list(rots_l = rots_data_l, MT_i = i_min), "./output/VAR_rotations/rotations_long_MT.RDS")
-saveRDS(omegas_summ, "./output/VAR_rotations/structural_shock_summaries.RDS")
+saveRDS(list(rots_l = rots_data_l, MT_i = i_min), "./data/VAR_data/replication/rotations_long_MT.RDS")
+saveRDS(omegas_summ, "./data/VAR_data/replication/structural_shock_summaries.RDS")
 
 
 ## Create Chart
