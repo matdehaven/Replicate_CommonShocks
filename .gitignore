@@ -9,6 +9,9 @@ data
 *.log
 *.synctex.gz
 *.synctex
+*.toc
+*.nav
+*.snm
 
 # History files
 .Rhistory
