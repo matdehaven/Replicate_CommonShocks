@@ -10,20 +10,20 @@
 
 
 ## Data Processing
-source("./code/clean_raw_data.R")
-source("./code/transform_clean_data.R")
+source("./code/pull_data/clean_raw_data.R")
+source("./code/pull_data/transform_clean_data.R")
 
 
 ## Data Charting
-source("./code/chart_clean_transformed_data.R")
+source("./code/pull_data/chart_clean_transformed_data.R")
 
 
 ## VAR Analysis
-source("./code/replicate_VAR_analysis.R")
+source("./code/VAR/replication/replicate_VAR_analysis.R")
 
 ## VAR Shock Charts
-source("./code/replicate_VAR_charts.R")
+source("./code/VAR/replication/replicate_VAR_charts.R")
 
 ## Historical Variance Decomposition
-source("./code/create_historical_variance_decomposition.R")
-source("./code/chart_FOMC_decomposition.R")
+source("./code/VAR/replication/create_historical_variance_decomposition.R")
+source("./code/VAR/replication/chart_FOMC_decomposition.R")
