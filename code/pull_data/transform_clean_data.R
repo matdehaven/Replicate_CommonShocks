@@ -20,8 +20,9 @@ data[!is.na(yc10), yc10 := yc10 - shift(yc10, 1, type = "lag")]
 ## Actually, it is log stock returns, so the ratio of prices, then logged
 data[!is.na(sp), sp := log(sp / shift(sp, 1, type = "lag"))]
 
-## EPU should also be changes
+## EPU should also be changes (trying just renomalized levels now)
 data[!is.na(epu), epu := log(epu) - log(shift(epu, 1, type = "lag"))]
+# data[!is.na(epu), epu := scale(epu)]
 
 ## Save transformed data to disk
 fwrite(data, "./data/cleaned_data/transformed_data.csv")

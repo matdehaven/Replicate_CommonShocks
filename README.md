@@ -1,4 +1,4 @@
-# replicate_common_shocks
+# Replicate "Common Shocks..."
 
 Final Project for Empirical Macro. Replicate some results from "Common Shocks in Stocks and Bonds" by Anna Cieslak and Hao Pang.
 
@@ -20,8 +20,18 @@ Downloaded from WRDS, for which you will need a subscription/access.
 
 CRSP, Index File on the S&P 500. Data coverage 1962-07-02 to 2021-12-31.
 
+S&P 500 daily data for 2022 is pulled from FRED, using their API.
+
+### FOMC Dates
+
+Script pulls these by scraping the Fed Board website.
+
 ### Economic Policy Uncertainty
 
 Downloaded from [Policy Uncertainty](https://www.policyuncertainty.com/index.html) website. Click on "USA" country, then scroll down to "US Daily News Index", and click "Download Data".
 
 This data is not a part of the original "Common Shocks..." paper and is used for an extension.
+
+### Election Dates
+
+....
