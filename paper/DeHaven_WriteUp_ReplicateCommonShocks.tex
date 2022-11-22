@@ -1,4 +1,5 @@
 \documentclass{article}
+\usepackage{amsmath}
 
 \title{Replication Project}
 \author{Matthew DeHaven}
@@ -8,5 +9,36 @@
 \maketitle
 
 Temp text
+
+\begin{align*}
+    \begin{bmatrix}
+        A_g^2      & A_m^2     & A_{pp}^2     & A_{pm}^2     & A_{u}^2 \\
+        A_g^5      & A_m^5     & A_{pp}^5     & A_{pm}^5     & A_{u}^5 \\
+        A_g^{10}   & A_m^{10}  & A_{pp}^{10}  & A_{pm}^{10}  & A_{u}^{10} \\
+        A_g^s      & A_m^s     & A_{pp}^s     & A_{pm}^s     & A_{u}^s \\
+        A_g^{epu}  & A_m^{epu} & A_{pp}^{epu} & A_{pm}^{epu} & A_{u}^{epu} 
+    \end{bmatrix}
+    &=
+    \begin{bmatrix}
+        + & + & - & + & + \\
+        + & + & - & + & >< \\
+        + & + & - & + & - \\
+        + & - & - & - & - \\
+        >< & >< & + & + & + 
+    \end{bmatrix}
+\end{align*}
+
+\begin{enumerate}
+    \item $[5,5]$ shock to uncertainty increases epu
+    \item $[4,5]$ shock to uncertainty decreases stock prices
+    \item $[3,5]$ shock to uncertainty decreases long run yields
+    \item $[2,5]$ Agnostic direction
+    \item $[1,5]$ shock to uncertainty increases short run yields
+    \item $[5,4]$ shock to risk premium increases epu
+    \item $[5,4]$ shock to risk premium increases epu 
+    \item $[5,2]$ shock to monetary policy increases epu
+    \item $[5,1]$ shock to growth increases epu 
+\end{enumerate}
+
 
 \end{document}
