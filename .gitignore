@@ -12,6 +12,9 @@ data
 *.toc
 *.nav
 *.snm
+*.aux
+*.fdb_latexmk
+*.fls
 
 # History files
 .Rhistory
